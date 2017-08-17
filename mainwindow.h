@@ -19,14 +19,25 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void ReadSerialPort();
+
     QSerialPort read;
+    void ReadSerialPort();
+    void SetSeriaPortAttribute();
+    void SetCommBoxTrue();
+    void SetCommBoxFalse();
+
 
 
 private slots:
-    void on_pushButton_clicked();
 
-    void readComDataSlot();
+    void ReadComDataSlot();
+
+
+    void on_pushButton_2_clicked();
+
+    void on_OpenPortButton_clicked();
+
+    void on_SendButton_clicked();
 
 private:
     Ui::MainWindow *ui;
