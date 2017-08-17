@@ -25,7 +25,7 @@ public:
     void SetSeriaPortAttribute();
     void SetCommBoxTrue();
     void SetCommBoxFalse();
-
+    int  ReceiveBytesNumber = 0;
 
 
 private slots:
@@ -33,11 +33,14 @@ private slots:
     void ReadComDataSlot();
 
 
-    void on_pushButton_2_clicked();
+    void on_ClosePortButton_clicked();
 
     void on_OpenPortButton_clicked();
 
     void on_SendButton_clicked();
+
+
+    void on_ClearButton_clicked();
 
 private:
     Ui::MainWindow *ui;
