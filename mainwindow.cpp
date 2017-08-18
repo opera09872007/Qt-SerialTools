@@ -6,6 +6,8 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QTimer>
+#include <QDebug>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -65,9 +67,8 @@ void MainWindow::ReadComDataSlot(){
         ReceiveBytesNumber += read.bytesAvailable();
         buf = read.readAll();
         ui->RxLabel->setText(tr("Rx: ") + QString::number(ReceiveBytesNumber) +  tr(" Bytes"));
-
         QString str = ui->ReceiveText->toPlainText();
-        str += tr(buf);
+        str += QString::fromLocal8Bit(buf);
         if(ui->AutoLineBox->isChecked()){
             str += "\n";
         }
@@ -176,7 +177,8 @@ void MainWindow::SetCommBoxFalse(){
 
 void MainWindow::on_SendButton_clicked()
 {
-    read.write(ui->TransmitText->toPlainText().toLatin1());
+    //qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit();
+    read.write(ui->TransmitText->toPlainText().toLocal8Bit());
 }
 
 
