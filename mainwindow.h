@@ -20,12 +20,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    QSerialPort read;
+    QSerialPort myport;
     void ReadSerialPort();
     void SetSeriaPortAttribute();
     void SetCommBoxTrue();
     void SetCommBoxFalse();
     int  ReceiveBytesNumber = 0;
+    int  TransmitBytesNumber = 0;
 
 
 private slots:
@@ -37,10 +38,10 @@ private slots:
 
     void on_OpenPortButton_clicked();
 
-    void on_SendButton_clicked();
-
 
     void on_ClearButton_clicked();
+
+    void on_TransmitButton_clicked();
 
 private:
     Ui::MainWindow *ui;

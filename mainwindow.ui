@@ -87,6 +87,9 @@
      <property name="text">
       <string>文本</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QRadioButton" name="radioButton_2">
      <property name="geometry">
@@ -137,7 +140,7 @@
       <string>自动发送</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="SendButton">
+    <widget class="QPushButton" name="TransmitButton">
      <property name="geometry">
       <rect>
        <x>100</x>
@@ -206,6 +209,9 @@
      </property>
      <property name="text">
       <string>文本</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QRadioButton" name="radioButton_6">

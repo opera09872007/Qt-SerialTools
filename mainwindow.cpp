@@ -28,19 +28,18 @@ MainWindow::~MainWindow()
 
 
 void MainWindow::on_OpenPortButton_clicked(){
-    read.close();
-
-    read.setPortName(ui->PortBox->currentText());
-    if(!read.open(QIODevice::ReadWrite)){
+    myport.close();
+    myport.setPortName(ui->PortBox->currentText());
+    if(!myport.open(QIODevice::ReadWrite)){
         QMessageBox::warning(this,tr("error"),tr("串口打开失败"),QMessageBox::Ok);
         ui->StateLabel->setText(ui->PortBox->currentText()+"打开失败");
         ui->StateLabel->setStyleSheet("color:red;");
     }
     else{
-        SetSeriaPortAttribute();
 
-        read.clearError();
-        read.clear();
+        myport.clearError();
+        myport.clear();
+        SetSeriaPortAttribute();
 
         SetCommBoxFalse();
         ui->StateLabel->setText(ui->PortBox->currentText()+tr("打开成功"));
@@ -56,16 +55,16 @@ void MainWindow::on_OpenPortButton_clicked(){
 
 void MainWindow::on_ClosePortButton_clicked(){
     ui->StateLabel->clear();
-    read.clear();
-    read.close();
+    myport.clear();
+    myport.close();
     SetCommBoxTrue();
 }
 
 void MainWindow::ReadComDataSlot(){
     QByteArray buf;
-    if(read.bytesAvailable()>0){
-        ReceiveBytesNumber += read.bytesAvailable();
-        buf = read.readAll();
+    if(myport.bytesAvailable()>0){
+        ReceiveBytesNumber += myport.bytesAvailable();
+        buf = myport.readAll();
         ui->RxLabel->setText(tr("Rx: ") + QString::number(ReceiveBytesNumber) +  tr(" Bytes"));
         QString str = ui->ReceiveText->toPlainText();
         str += QString::fromLocal8Bit(buf);
@@ -89,70 +88,70 @@ void MainWindow::ReadSerialPort(){
 
 void MainWindow::SetSeriaPortAttribute(){
     //设置波特率
-    read.setBaudRate(ui->BaudBox->currentText().toInt());
+    myport.setBaudRate(ui->BaudBox->currentText().toInt());
     //设置校验位
     if(ui->ParityBox->currentText() == tr("None"))
     {
-        read.setParity(QSerialPort::NoParity);
+        myport.setParity(QSerialPort::NoParity);
     }
     else if(ui->ParityBox->currentText() == tr("Even"))
     {
-        read.setParity(QSerialPort::OddParity);
+        myport.setParity(QSerialPort::OddParity);
     }
     else if(ui->ParityBox->currentText() == tr("Odd"))
     {
-        read.setParity(QSerialPort::EvenParity);
+        myport.setParity(QSerialPort::EvenParity);
     }
     else if(ui->ParityBox->currentText() == tr("Mark"))
     {
-        read.setParity(QSerialPort::EvenParity);
+        myport.setParity(QSerialPort::EvenParity);
     }
     else if(ui->ParityBox->currentText() == tr("Space"))
     {
-        read.setParity(QSerialPort::EvenParity);
+        myport.setParity(QSerialPort::EvenParity);
     }
     //设置数据位
     if(ui->DataBitsBox->currentText() == tr("5"))
     {
-        read.setDataBits(QSerialPort::Data5);
+        myport.setDataBits(QSerialPort::Data5);
     }
     else if(ui->DataBitsBox->currentText() == tr("6"))
     {
-        read.setDataBits(QSerialPort::Data6);
+        myport.setDataBits(QSerialPort::Data6);
     }
     else if(ui->DataBitsBox->currentText() == tr("7"))
     {
-        read.setDataBits(QSerialPort::Data7);
+        myport.setDataBits(QSerialPort::Data7);
     }
     else if(ui->DataBitsBox->currentText() == tr("8"))
     {
-        read.setDataBits(QSerialPort::Data8);
+        myport.setDataBits(QSerialPort::Data8);
     }
     //设置停止位
     if(ui->StopBitsBox->currentText() == tr("1"))
     {
-        read.setStopBits(QSerialPort::OneStop);
+        myport.setStopBits(QSerialPort::OneStop);
     }
     else if(ui->StopBitsBox->currentText() == tr("2"))
     {
-        read.setStopBits(QSerialPort::TwoStop);
+        myport.setStopBits(QSerialPort::TwoStop);
     }
     else if(ui->StopBitsBox->currentText() == tr("1.5"))
     {
-        read.setStopBits(QSerialPort::OneAndHalfStop);
+        myport.setStopBits(QSerialPort::OneAndHalfStop);
     }
     //设置流量
     if(ui->FlowControlBox->currentText() == tr("None"))
     {
-        read.setFlowControl(QSerialPort::NoFlowControl);
+        myport.setFlowControl(QSerialPort::NoFlowControl);
     }
     else if(ui->FlowControlBox->currentText() == tr("RTS/CTS"))
     {
-        read.setFlowControl(QSerialPort::HardwareControl);
+        myport.setFlowControl(QSerialPort::HardwareControl);
     }
     else if(ui->FlowControlBox->currentText() == tr("XON/XOFF"))
     {
-        read.setFlowControl(QSerialPort::SoftwareControl);
+        myport.setFlowControl(QSerialPort::SoftwareControl);
     }
 }
 
@@ -175,18 +174,22 @@ void MainWindow::SetCommBoxFalse(){
 
 }
 
-void MainWindow::on_SendButton_clicked()
-{
-    //qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit();
-    read.write(ui->TransmitText->toPlainText().toLocal8Bit());
-}
-
-
 
 
 void MainWindow::on_ClearButton_clicked()
 {
     ui->ReceiveText->clear();
+    ReceiveBytesNumber = 0;
+    TransmitBytesNumber = 0;
     ui->RxLabel->setText(tr("Rx: 0 Bytes"));
     ui->TxLabel->setText(tr("Tx: 0 Bytes"));
+}
+
+
+void MainWindow::on_TransmitButton_clicked()
+{
+    //qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit().size();
+    myport.write(ui->TransmitText->toPlainText().toLocal8Bit());
+    TransmitBytesNumber += ui->TransmitText->toPlainText().toLocal8Bit().size();
+    ui->TxLabel->setText(tr("Rx: ") + QString::number(TransmitBytesNumber) +  tr(" Bytes"));
 }
