@@ -44,7 +44,8 @@ private slots:
     void ReceiveAsHexButtonSlot();
     void ReceiveAsTextButtonSlot();
     void on_ClearButton_clicked();
-
+    void AutoSendBoxSlot();
+    void WriteComDataSlot();
     void on_TransmitButton_clicked();
 
 

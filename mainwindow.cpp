@@ -10,6 +10,7 @@
 
 QTimer *timer1 = new QTimer();
 QTimer *timer2 = new QTimer();
+QTimer *timer3 = new QTimer();
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -50,8 +51,9 @@ void MainWindow::on_OpenPortButton_clicked(){
         timer1->start(100);
 
 
-        connect(ui->ReceiveAsTextButton, SIGNAL(toggled(bool)), this, SLOT(ReceiveAsTextButtonSlot()));
-        connect(ui->ReceiveAsHexButton, SIGNAL(toggled(bool)), this, SLOT(ReceiveAsHexButtonSlot()));
+        //connect(ui->ReceiveAsTextButton, SIGNAL(toggled(bool)), this, SLOT(ReceiveAsTextButtonSlot()));
+        //connect(ui->ReceiveAsHexButton, SIGNAL(toggled(bool)), this, SLOT(ReceiveAsHexButtonSlot()));
+        connect(ui->AutoSendBox, SIGNAL(toggled(bool)), this, SLOT(AutoSendBoxSlot()));
     }
 }
 
@@ -209,12 +211,12 @@ void MainWindow::on_TransmitButton_clicked()
     TransmitBytesNumber += ui->TransmitText->toPlainText().toLocal8Bit().size();
     ui->TxLabel->setText(tr("Rx: ") + QString::number(TransmitBytesNumber) +  tr(" Bytes"));
     if(ui->TransmitAsTextButton->isChecked()){
-       //qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit();
-       myport.write(ui->TransmitText->toPlainText().toLocal8Bit());
+        //qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit();
+        myport.write(ui->TransmitText->toPlainText().toLocal8Bit());
     }
     else if(ui->TransmitAsHexButton->isChecked()){
-       //qDebug()<<ui->TransmitText->toPlainText().toLatin1().toHex();
-       myport.write(ui->TransmitText->toPlainText().toLatin1().toHex());
+        //qDebug()<<ui->TransmitText->toPlainText().toLatin1().toHex();
+        myport.write(ui->TransmitText->toPlainText().toLatin1().toHex());
     }
 }
 
@@ -241,4 +243,22 @@ void MainWindow::ReceiveAsTextButtonSlot(){
 
     connect(timer1, SIGNAL(timeout()), this, SLOT(ReadComDataSlot()));
     timer1->start(100);
+}
+
+
+void MainWindow::AutoSendBoxSlot(){
+    timer3->stop();
+    if(ui->AutoSendBox->isChecked()){
+        connect(timer3, SIGNAL(timeout()), this, SLOT(WriteComDataSlot()));
+        timer3->start(ui->spinBox->value());
+    }
+
+}
+
+
+void MainWindow::WriteComDataSlot(){
+    qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit();
+    myport.write(ui->TransmitText->toPlainText().toLocal8Bit());
+    TransmitBytesNumber += ui->TransmitText->toPlainText().toLocal8Bit().size();
+    ui->TxLabel->setText(tr("Rx: ") + QString::number(TransmitBytesNumber) +  tr(" Bytes"));
 }
