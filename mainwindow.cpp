@@ -8,7 +8,8 @@
 #include <QTimer>
 #include <QDebug>
 
-
+QTimer *timer1 = new QTimer();
+QTimer *timer2 = new QTimer();
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -36,19 +37,21 @@ void MainWindow::on_OpenPortButton_clicked(){
         ui->StateLabel->setStyleSheet("color:red;");
     }
     else{
-
-        myport.clearError();
-        myport.clear();
-        SetSeriaPortAttribute();
-
-        SetCommBoxFalse();
         ui->StateLabel->setText(ui->PortBox->currentText()+tr("打开成功"));
         ui->StateLabel->setStyleSheet("color:green;");
 
-        QTimer *timer = new QTimer(this);
-        connect(timer, SIGNAL(timeout()), this, SLOT(ReadComDataSlot()));
-        timer->start(100);
+        timer1->stop();
+        timer2->stop();
+        myport.clearError();
+        myport.clear();
+        SetSeriaPortAttribute();
+        SetCommBoxFalse();
+        connect(timer1, SIGNAL(timeout()), this, SLOT(ReadComDataSlot()));
+        timer1->start(100);
 
+
+        connect(ui->ReceiveAsTextButton, SIGNAL(toggled(bool)), this, SLOT(ReceiveAsTextButtonSlot()));
+        connect(ui->ReceiveAsHexButton, SIGNAL(toggled(bool)), this, SLOT(ReceiveAsHexButtonSlot()));
     }
 }
 
@@ -77,7 +80,22 @@ void MainWindow::ReadComDataSlot(){
     }
 }
 
-
+void MainWindow::ReadComDataSlot2(){
+    QByteArray buf;
+    if(myport.bytesAvailable()>0){
+        ReceiveBytesNumber += myport.bytesAvailable();
+        buf = myport.readAll();
+        ui->RxLabel->setText(tr("Rx: ") + QString::number(ReceiveBytesNumber) +  tr(" Bytes"));
+        QString str = ui->ReceiveText->toPlainText();
+        str += buf.toHex();
+        if(ui->AutoLineBox->isChecked()){
+            str += "\n";
+        }
+        ui->ReceiveText->clear();
+        ui->ReceiveText->append(str);
+        buf.clear();
+    }
+}
 
 
 void MainWindow::ReadSerialPort(){
@@ -188,8 +206,39 @@ void MainWindow::on_ClearButton_clicked()
 
 void MainWindow::on_TransmitButton_clicked()
 {
-    //qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit().size();
-    myport.write(ui->TransmitText->toPlainText().toLocal8Bit());
     TransmitBytesNumber += ui->TransmitText->toPlainText().toLocal8Bit().size();
     ui->TxLabel->setText(tr("Rx: ") + QString::number(TransmitBytesNumber) +  tr(" Bytes"));
+    if(ui->TransmitAsTextButton->isChecked()){
+       //qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit();
+       myport.write(ui->TransmitText->toPlainText().toLocal8Bit());
+    }
+    else if(ui->TransmitAsHexButton->isChecked()){
+       //qDebug()<<ui->TransmitText->toPlainText().toLatin1().toHex();
+       myport.write(ui->TransmitText->toPlainText().toLatin1().toHex());
+    }
+}
+
+
+void MainWindow::ReceiveAsHexButtonSlot(){
+    timer1->stop();
+    myport.clearError();
+    myport.clear();
+    SetSeriaPortAttribute();
+
+    SetCommBoxFalse();
+
+    connect(timer2, SIGNAL(timeout()), this, SLOT(ReadComDataSlot2()));
+    timer2->start(100);
+}
+void MainWindow::ReceiveAsTextButtonSlot(){
+    timer2->stop();
+    timer1->stop();
+    myport.clearError();
+    myport.clear();
+    SetSeriaPortAttribute();
+
+    SetCommBoxFalse();
+
+    connect(timer1, SIGNAL(timeout()), this, SLOT(ReadComDataSlot()));
+    timer1->start(100);
 }

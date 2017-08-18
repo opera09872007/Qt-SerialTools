@@ -75,7 +75,7 @@
       <string>自动换行</string>
      </property>
     </widget>
-    <widget class="QRadioButton" name="radioButton">
+    <widget class="QRadioButton" name="ReceiveAsTextButton">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -91,7 +91,7 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QRadioButton" name="radioButton_2">
+    <widget class="QRadioButton" name="ReceiveAsHexButton">
      <property name="geometry">
       <rect>
        <x>100</x>
@@ -198,7 +198,7 @@
       <string>ms</string>
      </property>
     </widget>
-    <widget class="QRadioButton" name="radioButton_5">
+    <widget class="QRadioButton" name="TransmitAsTextButton">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -214,7 +214,7 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QRadioButton" name="radioButton_6">
+    <widget class="QRadioButton" name="TransmitAsHexButton">
      <property name="geometry">
       <rect>
        <x>100</x>
