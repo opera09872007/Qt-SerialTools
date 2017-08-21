@@ -248,7 +248,7 @@ void MainWindow::ReceiveAsTextButtonSlot(){
 
 
 void MainWindow::AutoSendBoxSlot(){
-    //qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit();
+    qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit();
     myport.write(ui->TransmitText->toPlainText().toLocal8Bit());
     TransmitBytesNumber += ui->TransmitText->toPlainText().toLocal8Bit().size();
     ui->TxLabel->setText(tr("Rx: ") + QString::number(TransmitBytesNumber) +  tr(" Bytes"));
