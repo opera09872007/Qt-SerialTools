@@ -37,3 +37,7 @@ FORMS += \
 
 #项目添加 serialport库
 QT       += serialport
+
+RESOURCES += \
+    icon.qrc
+RC_FILE=icon.rc

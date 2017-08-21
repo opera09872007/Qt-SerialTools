@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    setWindowIcon(QIcon("icon.ico"));
 
     setWindowTitle(tr("串口调试工具 by dannywang"));
     ReadSerialPort();
