@@ -45,9 +45,10 @@ private slots:
     void ReceiveAsTextButtonSlot();
     void on_ClearButton_clicked();
     void AutoSendBoxSlot();
-    void WriteComDataSlot();
     void on_TransmitButton_clicked();
 
+
+    void on_AutoSendBox_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;

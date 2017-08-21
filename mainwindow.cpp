@@ -51,9 +51,10 @@ void MainWindow::on_OpenPortButton_clicked(){
         timer1->start(100);
 
 
-        //connect(ui->ReceiveAsTextButton, SIGNAL(toggled(bool)), this, SLOT(ReceiveAsTextButtonSlot()));
-        //connect(ui->ReceiveAsHexButton, SIGNAL(toggled(bool)), this, SLOT(ReceiveAsHexButtonSlot()));
-        connect(ui->AutoSendBox, SIGNAL(toggled(bool)), this, SLOT(AutoSendBoxSlot()));
+        connect(ui->ReceiveAsTextButton, SIGNAL(toggled(bool)), this, SLOT(ReceiveAsTextButtonSlot()));
+        connect(ui->ReceiveAsHexButton, SIGNAL(toggled(bool)), this, SLOT(ReceiveAsHexButtonSlot()));
+        timer3->setInterval(ui->spinBox->value());
+        connect(timer3, SIGNAL(timeout()), this, SLOT(AutoSendBoxSlot()));
     }
 }
 
@@ -247,18 +248,20 @@ void MainWindow::ReceiveAsTextButtonSlot(){
 
 
 void MainWindow::AutoSendBoxSlot(){
-    timer3->stop();
-    if(ui->AutoSendBox->isChecked()){
-        connect(timer3, SIGNAL(timeout()), this, SLOT(WriteComDataSlot()));
-        timer3->start(ui->spinBox->value());
-    }
-
-}
-
-
-void MainWindow::WriteComDataSlot(){
-    qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit();
+    //qDebug()<<ui->TransmitText->toPlainText().toLocal8Bit();
     myport.write(ui->TransmitText->toPlainText().toLocal8Bit());
     TransmitBytesNumber += ui->TransmitText->toPlainText().toLocal8Bit().size();
     ui->TxLabel->setText(tr("Rx: ") + QString::number(TransmitBytesNumber) +  tr(" Bytes"));
+}
+
+
+
+void MainWindow::on_AutoSendBox_toggled(bool checked)
+{
+    if(ui->AutoSendBox->isChecked()){
+        timer3->start(ui->spinBox->value());
+    }
+    else {
+        timer3->stop();
+    }
 }
